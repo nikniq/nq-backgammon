@@ -11,6 +11,7 @@
         <div class="price">$0<span>/forever</span></div>
         <ul>
             <li>Unlimited games vs computer</li>
+            <li>Move hints with explanations</li>
             <li>Saved scores and stats</li>
             <li>Global leaderboard ranking</li>
             <li>Sign in with Google or nikniq</li>
@@ -28,7 +29,7 @@
         <ul>
             <li>Everything in Free</li>
             <li>Harder AI difficulty levels</li>
-            <li>Move hints and game replays</li>
+            <li>Game replays and move analysis</li>
             <li>Custom board and checker themes</li>
             <li>Pro badge on the leaderboard</li>
         </ul>

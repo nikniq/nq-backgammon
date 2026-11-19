@@ -5,7 +5,7 @@
     if (!host) return;
     const $ = (id) => document.getElementById(id);
     const statusEl = $('status'), pipEl = $('pips'), saveEl = $('save-status');
-    const btnRoll = $('btn-roll'), btnUndo = $('btn-undo'), btnNew = $('btn-new');
+    const btnRoll = $('btn-roll'), btnUndo = $('btn-undo'), btnNew = $('btn-new'), btnHint = $('btn-hint'), tipEl = $('tip');
     const overlay = $('result');
 
     const S = { w: 1, b: -1 }, OPP = { w: 'b', b: 'w' }, BAR = { w: 25, b: 0 }, OFF = { w: 0, b: 25 };
@@ -219,6 +219,7 @@
             const fill = `url(#g-p${alt ? 'b' : 'a'}${top ? '' : '2'})`;
             h += `<polygon points="${x - 30},${baseY} ${x + 30},${baseY} ${x},${tipY}" fill="${fill}" stroke="rgba(0,0,0,.25)"/>`;
             if (targets.has(p)) h += `<polygon class="target-glow" points="${x - 30},${baseY} ${x + 30},${baseY} ${x},${tipY}" fill="rgba(255,213,74,.45)" stroke="#ffd54a" stroke-width="3" filter="url(#f-glow)"/>`;
+            if (G.hint && G.hint.to === p && G.selected === G.hint.from) h += `<polygon class="target-glow" points="${x - 30},${baseY} ${x + 30},${baseY} ${x},${tipY}" fill="rgba(110,231,150,.5)" stroke="#6ee796" stroke-width="4" filter="url(#f-glow)"/>`;
             h += `<text x="${x}" y="${top ? TOP - 9 : BOT + 20}" text-anchor="middle" class="pt-num">${p}</text>`;
         }
         // checkers on points
@@ -252,7 +253,8 @@
                 h += `<rect x="${x - 36}" y="${y - 8}" width="72" height="16" rx="4" fill="url(#g-${c})" stroke="${c === 'w' ? '#9c8b6c' : '#000'}"/>`;
             }
         }
-        if (targets.has(0)) h += `<rect class="target-glow" x="890" y="${MID + 10}" width="90" height="${BOT - MID - 10}" rx="8" fill="rgba(255,213,74,.3)" stroke="#ffd54a" stroke-width="3" filter="url(#f-glow)"/>`;
+        if (G.hint && G.hint.to === 0 && G.selected === G.hint.from) h += `<rect class="target-glow" x="890" y="${MID + 10}" width="90" height="${BOT - MID - 10}" rx="8" fill="rgba(110,231,150,.35)" stroke="#6ee796" stroke-width="4" filter="url(#f-glow)"/>`;
+        else if (targets.has(0)) h += `<rect class="target-glow" x="890" y="${MID + 10}" width="90" height="${BOT - MID - 10}" rx="8" fill="rgba(255,213,74,.3)" stroke="#ffd54a" stroke-width="3" filter="url(#f-glow)"/>`;
         // dice
         if (G.dice.length) {
             const c = G.diceColor, cx = c === 'w' ? 675 : 225;
@@ -302,6 +304,7 @@
         pipEl.textContent = `Pips: you ${pip(G.s, 'w')} · computer ${pip(G.s, 'b')}`;
         btnRoll.disabled = !(G.phase === 'roll');
         btnUndo.disabled = !(G.phase === 'move' && G.undo.length);
+        btnHint.disabled = G.phase !== 'move';
     }
 
     function newGame() {
@@ -341,7 +344,8 @@
     }
 
     async function startHumanMoves() {
-        G.phase = 'move'; G.undo = []; G.selected = null;
+        G.phase = 'move'; G.undo = []; G.selected = null; G.hint = null;
+        showTip();
         computeHuman();
         if (!G.legal.length) {
             setStatus(`You rolled ${G.dice.join('-')}: no legal moves.`);
@@ -354,6 +358,7 @@
     }
 
     async function humanMove(m) {
+        G.hint = null;
         G.undo.push({ s: G.s, remaining: G.remaining.slice(), moves: G.moves });
         const from = locXY(G.s, 'w', m.from);
         const { state, hit } = apply(G.s, 'w', m);
@@ -448,6 +453,54 @@
         }
     }
 
+    /* ---------------- Hints ---------------- */
+    const TIPS = [
+        'Two checkers on a point make it safe, and they block your opponent.',
+        'Avoid leaving a lone checker (a blot) within 6 points of an enemy checker.',
+        'Your 5 point and 7 point are the most valuable points to make early.',
+        'Hitting sends an enemy checker back to the start. It costs them a lot of distance.',
+        'Six made points in a row (a prime) is a wall your opponent can\'t get past.',
+        'Once all checkers have passed each other it\'s a pure race, so just move efficiently.',
+        'You can play your dice in either order. Click a checker to see both options.',
+        'When in doubt, move the checker that leaves the fewest blots.',
+        'Opening 3-1? Make your 5 point: 8/5, 6/5.',
+        'Opening 6-1? Make your 7 point: 13/7, 8/7.',
+        'Check the pip counts: lower is better. If you\'re well ahead, play safe and race.',
+    ];
+    function showTip() { if (tipEl) tipEl.innerHTML = '💡 <b>Tip:</b> ' + TIPS[Math.floor(Math.random() * TIPS.length)]; }
+    const fmt = (p) => (p === 25 ? 'bar' : p === 0 ? 'off' : p);
+    function blots(s, c) { let n = 0; for (let p = 1; p <= 24; p++) if (s.pts[p] * S[c] === 1) n++; return n; }
+    function explain(before, best) {
+        const why = [];
+        let st = before, hits = 0;
+        for (const m of best.moves) { const r = apply(st, 'w', m); if (r.hit) hits++; st = r.state; }
+        const after = best.state;
+        if (hits) why.push(hits > 1 ? `hits ${hits} checkers` : 'hits an enemy checker');
+        const made = [];
+        for (let p = 1; p <= 24; p++) if (after.pts[p] >= 2 && before.pts[p] < 2) made.push(p);
+        if (made.length) why.push(`makes the ${made.join(' and ')} point${made.length > 1 ? 's' : ''}${made.some((p) => p <= 6) ? ' in your home board' : ''}`);
+        const off = after.off.w - before.off.w;
+        if (off) why.push(`bears off ${off} checker${off > 1 ? 's' : ''}`);
+        if (before.bar.w && !after.bar.w) why.push('gets back in from the bar');
+        const b0 = blots(before, 'w'), b1 = blots(after, 'w');
+        if (b1 < b0) why.push(`leaves fewer blots (${b0} → ${b1})`);
+        else if (b1 === 0) why.push('leaves no blots');
+        let backBefore = 0, backAfter = 0;
+        for (let p = 19; p <= 24; p++) { backBefore += count(before, 'w', p); backAfter += count(after, 'w', p); }
+        if (backAfter < backBefore && !hits) why.push('escapes a back checker');
+        return why.length ? why.join(', ') : 'keeps your position safest overall';
+    }
+    function hint() {
+        if (G.phase !== 'move') return;
+        const best = bestSequence(G.s, 'w', G.remaining);
+        if (!best || !best.moves.length) return;
+        const m = best.moves[0];
+        G.hint = m; G.selected = m.from; computeHuman();
+        const play = best.moves.map((x) => `${fmt(x.from)}/${fmt(x.to)}`).join(', ');
+        setStatus(`💡 Suggested: <b>${play}</b>. This ${explain(G.s, best)}. The green point shows the first move.`);
+        render();
+    }
+
     /* ---------------- Input ---------------- */
     host.addEventListener('click', (e) => {
         const t = e.target.closest('[data-p]');
@@ -462,15 +515,17 @@
         computeHuman(); render();
     });
     btnRoll.addEventListener('click', doRoll);
+    btnHint.addEventListener('click', hint);
     btnNew.addEventListener('click', () => { if (!G || G.over || G.moves === 0 || confirm('Abandon the current game?')) newGame(); });
     overlay.querySelector('[data-again]').addEventListener('click', newGame);
     btnUndo.addEventListener('click', () => {
         if (G.phase !== 'move' || !G.undo.length) return;
         const u = G.undo.pop();
-        G.s = u.s; G.remaining = u.remaining; G.moves = u.moves; G.selected = null;
+        G.s = u.s; G.remaining = u.remaining; G.moves = u.moves; G.selected = null; G.hint = null;
         computeHuman(); setStatus(`Your move: ${G.dice.join('-')}.`); render(); updatePanel();
     });
     document.addEventListener('keydown', (e) => {
+        if (e.key === 'h' && G && G.phase === 'move' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) hint();
         if (e.code === 'Space' && G && G.phase === 'roll' && !/INPUT|TEXTAREA|BUTTON/.test(document.activeElement.tagName)) { e.preventDefault(); doRoll(); }
     });
 

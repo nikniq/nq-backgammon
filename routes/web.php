@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [GameController::class, 'home'])->name('home');
 Route::get('/play', [GameController::class, 'play'])->name('play');
 Route::view('/pricing', 'pricing')->name('pricing');
+Route::view('/how-to-play', 'rules')->name('rules');
 Route::view('/privacy', 'legal.privacy')->name('privacy');
 Route::view('/terms', 'legal.terms')->name('terms');
 Route::get('/leaderboard', [GameController::class, 'leaderboard'])->name('leaderboard');

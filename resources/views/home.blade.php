@@ -55,7 +55,7 @@
                 <li><b>Hit</b> lone enemy checkers to send them to the bar.</li>
                 <li><b>Bear off</b> all 15 checkers first to win.</li>
             </ol>
-            <a href="{{ route('play') }}" class="btn">Try it now</a>
+            <div class="cta-row"><a href="{{ route('play') }}" class="btn">Try it now</a><a href="{{ route('rules') }}" class="btn btn-ghost">Full rules</a></div>
         </div>
         <div class="how-card">
             <h3>Scoring</h3>

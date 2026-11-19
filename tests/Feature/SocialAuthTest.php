@@ -29,7 +29,7 @@ class SocialAuthTest extends TestCase
 
     public function test_pages_render(): void
     {
-        foreach (['/', '/play', '/pricing', '/leaderboard', '/login', '/register', '/privacy', '/terms'] as $url) {
+        foreach (['/', '/play', '/pricing', '/how-to-play', '/leaderboard', '/login', '/register', '/privacy', '/terms'] as $url) {
             $this->get($url)->assertOk();
         }
     }

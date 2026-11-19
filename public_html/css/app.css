@@ -192,3 +192,20 @@ nav[role=navigation] svg { width: 16px; }
 .r-sub { color: var(--muted); margin-bottom: 14px; }
 .r-pitch { font-size: 15px; }
 @keyframes fadein { from { opacity: 0; } }
+
+/* ---------- Rules ---------- */
+.rules { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+.toc { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 4px; padding: 18px; }
+.toc a { text-decoration: none; color: var(--muted); padding: 3px 0; font-size: 14px; }
+.toc a:hover { color: var(--accent); }
+.prose-wide section { scroll-margin-top: 84px; padding-bottom: 8px; }
+.prose-wide h2 { font-size: 26px; margin: 28px 0 10px; }
+.prose-wide section:first-child h2 { margin-top: 0; }
+.prose-wide li { margin: 6px 0; }
+.rules-figure { max-width: 520px; margin: 8px auto 16px; }
+.rules-figure .board-art { transform: none; box-shadow: var(--shadow); }
+kbd { font: 600 13px Inter, sans-serif; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; background: var(--bg); }
+@media (max-width: 860px) { .rules { grid-template-columns: 1fr; } .toc { position: static; } }
+
+.tip { font-size: 13px; margin-top: 10px; padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, #6ee796 12%, transparent); border: 1px solid color-mix(in srgb, #6ee796 35%, transparent); }
+.tip:empty { display: none; }

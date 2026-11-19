@@ -8,7 +8,7 @@
     <meta name="description" content="@yield('description', 'Play beautiful, free backgammon in your browser. No download. Track your scores and climb the leaderboard.')">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v=2">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v=3">
 </head>
 <body>
 <header class="topbar">
@@ -19,6 +19,7 @@
         </button>
         <nav class="mainnav">
             <a href="{{ route('play') }}" @class(['active' => request()->routeIs('play')])>Play</a>
+            <a href="{{ route('rules') }}" @class(['active' => request()->routeIs('rules')])>How to play</a>
             <a href="{{ route('leaderboard') }}" @class(['active' => request()->routeIs('leaderboard')])>Leaderboard</a>
             <a href="{{ route('pricing') }}" @class(['active' => request()->routeIs('pricing')])>Pricing</a>
             @auth
@@ -51,7 +52,7 @@
             <h4>Play</h4>
             <a href="{{ route('play') }}">Play vs computer</a>
             <a href="{{ route('leaderboard') }}">Leaderboard</a>
-            <a href="{{ route('home') }}#how">How to play</a>
+            <a href="{{ route('rules') }}">How to play</a>
         </div>
         <div>
             <h4>Account</h4>

@@ -26,8 +26,10 @@
     <aside class="panel">
         <div id="status" class="status">Setting up the board…</div>
         <div id="pips" class="pips muted"></div>
+        <div id="tip" class="tip"></div>
         <div class="buttons">
             <button id="btn-roll" class="btn" disabled>🎲 Roll</button>
+            <button id="btn-hint" class="btn btn-ghost" disabled title="Suggest the best move (H)">💡 Hint</button>
             <button id="btn-undo" class="btn btn-ghost" disabled>Undo</button>
             <button id="btn-new" class="btn btn-ghost">New game</button>
         </div>
@@ -47,8 +49,9 @@
         </div>
         <details class="help">
             <summary>How to play</summary>
-            <p>You are <b>White</b> and move counter-clockwise toward your home board (bottom right, points 1–6). Roll, click a glowing checker, then click a highlighted point. Doubles give four moves. Bear off all 15 checkers to win.</p>
+            <p>You are <b>White</b> and move counter-clockwise toward your home board (bottom right, points 1–6). Roll, click a glowing checker, then click a highlighted point. Either die can be played first. Stuck? Press 💡 Hint (or H). Doubles give four moves. Bear off all 15 checkers to win.</p>
             <p>Gammon (opponent has borne off none) = 2 points. Backgammon (opponent also still has a checker on the bar or in your home) = 3 points.</p>
+            <p><a href="{{ route('rules') }}">Read the full rules and strategy tips →</a></p>
         </details>
     </aside>
 </div>
@@ -60,5 +63,5 @@
         saveUrl: @json(route('games.store')),
     };
 </script>
-<script src="{{ asset('js/backgammon.js') }}?v=2"></script>
+<script src="{{ asset('js/backgammon.js') }}?v=3"></script>
 @endpush
