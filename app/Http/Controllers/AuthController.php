@@ -24,7 +24,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('home'));
+            return redirect()->intended(route('play'));
         }
 
         return back()->withErrors(['email' => 'These credentials do not match our records.'])->onlyInput('email');
@@ -47,7 +47,7 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('home');
+        return redirect()->route('play');
     }
 
     public function logout(Request $request)

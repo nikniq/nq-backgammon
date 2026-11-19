@@ -8,6 +8,20 @@ use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
+    public function home()
+    {
+        return view('home', [
+            'playerCount' => User::has('games')->count(),
+            'gameCount' => Game::count(),
+            'topPlayers' => User::query()
+                ->withSum('games as total_points', 'points')
+                ->has('games')
+                ->orderByDesc('total_points')
+                ->limit(3)
+                ->get(),
+        ]);
+    }
+
     public function play()
     {
         return view('game');
@@ -45,7 +59,7 @@ class GameController extends Controller
         $leaders = User::query()
             ->withCount(['games', 'games as wins_count' => fn ($q) => $q->where('result', 'win')])
             ->withSum('games as total_points', 'points')
-            ->having('games_count', '>', 0)
+            ->has('games')
             ->orderByDesc('total_points')
             ->orderByDesc('wins_count')
             ->limit(50)

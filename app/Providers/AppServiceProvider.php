@@ -19,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Laravel\Socialite\Facades\Socialite::extend('nikniq', function ($app) {
+            $config = $app['config']['services.nikniq'];
+
+            return \Laravel\Socialite\Facades\Socialite::buildProvider(\App\Socialite\NikniqProvider::class, $config);
+        });
         //
     }
 }

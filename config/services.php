@@ -28,6 +28,22 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
+    ],
+
+    'nikniq' => [
+        'client_id' => env('NIKNIQ_CLIENT_ID'),
+        'client_secret' => env('NIKNIQ_CLIENT_SECRET'),
+        'redirect' => env('NIKNIQ_REDIRECT_URI', '/auth/nikniq/callback'),
+        'base_url' => env('NIKNIQ_BASE_URL', 'https://nikniq.com'),
+        'authorize_path' => env('NIKNIQ_AUTHORIZE_PATH', '/oauth/authorize'),
+        'token_path' => env('NIKNIQ_TOKEN_PATH', '/oauth/token'),
+        'user_path' => env('NIKNIQ_USER_PATH', '/api/user'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

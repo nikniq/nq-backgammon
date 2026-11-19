@@ -56,3 +56,14 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Social sign-in (Google & nikniq)
+
+Each button appears only when its client ID is set in `.env`.
+
+| Provider | Env vars | Callback URL to register |
+|---|---|---|
+| Google | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | `${APP_URL}/auth/google/callback` |
+| nikniq | `NIKNIQ_CLIENT_ID`, `NIKNIQ_CLIENT_SECRET`, `NIKNIQ_BASE_URL` | `${APP_URL}/auth/nikniq/callback` |
+
+nikniq defaults to Passport-style endpoints (`/oauth/authorize`, `/oauth/token`, `/api/user`); override with `NIKNIQ_AUTHORIZE_PATH`, `NIKNIQ_TOKEN_PATH`, `NIKNIQ_USER_PATH`. Run `php artisan migrate` after pulling.

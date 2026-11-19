@@ -2,9 +2,14 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [GameController::class, 'play'])->name('home');
+Route::get('/', [GameController::class, 'home'])->name('home');
+Route::get('/play', [GameController::class, 'play'])->name('play');
+Route::view('/pricing', 'pricing')->name('pricing');
+Route::view('/privacy', 'legal.privacy')->name('privacy');
+Route::view('/terms', 'legal.terms')->name('terms');
 Route::get('/leaderboard', [GameController::class, 'leaderboard'])->name('leaderboard');
 
 Route::middleware('guest')->group(function () {
@@ -12,6 +17,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('oauth.redirect');
+    Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('oauth.callback');
 });
 
 Route::middleware('auth')->group(function () {

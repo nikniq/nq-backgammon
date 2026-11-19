@@ -4,6 +4,7 @@
 <div class="card narrow">
     <h1>Create an account</h1>
     <p class="muted">Registered players have their results saved and appear on the leaderboard.</p>
+    @include('partials.social-login')
     <form method="POST" action="{{ route('register') }}">
         @csrf
         <label>Display name <input type="text" name="name" value="{{ old('name') }}" required maxlength="50" autofocus></label>

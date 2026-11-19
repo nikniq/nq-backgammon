@@ -23,7 +23,7 @@
                 <td>{{ gmdate('i:s', $g->duration_seconds) }}</td>
             </tr>
         @empty
-            <tr><td colspan="6" class="muted">No games yet. <a href="{{ route('home') }}">Play one!</a></td></tr>
+            <tr><td colspan="6" class="muted">No games yet. <a href="{{ route('play') }}">Play one!</a></td></tr>
         @endforelse
         </tbody>
     </table>
